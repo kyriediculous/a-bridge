@@ -104,7 +104,7 @@ contract ABridgeRouter is Router {
         if (_action.isTransfer()) {
             _handleTransfer(_origin, _nonce, _tokenId, _action);
         } else if (_action.isUpdateSupply()) {
-            _handleUpdateSupply(_origin, _nonce, _tokenId, _action);
+            _handleUpdateSupply(_tokenId, _action);
         } else {
             require(false, "!valid action");
         }
@@ -193,12 +193,7 @@ contract ABridgeRouter is Router {
 
     // ===== handleUpdateSupply ======
 
-    function _handleUpdateSupply(
-        uint32 _origin,
-        uint32 _nonce,
-        bytes29 _tokenId,
-        bytes29 _action
-    ) internal {
+    function _handleUpdateSupply(bytes29 _tokenId, bytes29 _action) internal {
         address _token = tokenRegistry.ensureLocalToken(
             _tokenId.domain(),
             _tokenId.id()

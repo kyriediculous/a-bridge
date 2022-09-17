@@ -1,37 +1,63 @@
-import * as dotenv from 'dotenv'
 
-import '@nomicfoundation/hardhat-toolbox'
+import '@nomiclabs/hardhat-ethers'
+import '@nomiclabs/hardhat-web3'
+import '@nomiclabs/hardhat-waffle'
+import 'hardhat-typechain'
+
+// deployment plugins
+import 'hardhat-deploy'
+import 'hardhat-deploy-ethers'
+import '@openzeppelin/hardhat-upgrades'
+
+// Tools
+import 'hardhat-gas-reporter'
+import 'solidity-coverage'
+import '@nomiclabs/hardhat-etherscan'
+
 import { HardhatUserConfig } from 'hardhat/types'
-import '@primitivefi/hardhat-dodoc'
+
+import dotenv from 'dotenv'
+import path from 'path'
+import fs from 'fs'
 
 dotenv.config()
+const PRIVATE_KEY = process.env.PRIVATE_KEY
+
+
+function loadTasks() {
+  const tasksPath = path.join(__dirname, 'tasks')
+  fs.readdirSync(tasksPath).forEach(task => {
+    require(`${tasksPath}/${task}`)
+  })
+}
+
+if (
+  fs.existsSync(path.join(__dirname, 'artifacts')) &&
+  fs.existsSync(path.join(__dirname, 'typechain'))
+) {
+  loadTasks()
+}
 
 const config: HardhatUserConfig = {
+  defaultNetwork: "hardhat",
+  networks: {
+    gorli: {
+      url: "https://goerli.infura.io/v3/79c508601e4b4b8296b921f1064220e8",
+      accounts: PRIVATE_KEY ? [`0x${PRIVATE_KEY}`] : undefined
+    }
+  },
   solidity: {
     compilers: [
       {
         version: '0.8.15',
         settings: {
-          viaIR: true,
           optimizer: {
-            enabled: true,
-            runs: 15000,
-          },
-        },
-      },
-    ],
+            runs: 200
+          }
+        }
+      }
+    ]
   },
-  networks: {
-    hardhat: {
-      blockGasLimit: 30_000_000,
-    },
-  },
-  gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
-    currency: 'USD',
-  },
-  // Avoid foundry cache conflict.
-  paths: { cache: 'hh-cache' },
-}
+};
 
-export default config
+export default config;
