@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.7.6;
+pragma solidity ^0.8.15;
 
 contract AERC20 {
     /**
@@ -69,7 +69,7 @@ contract AERC20 {
      * @dev Emits an `Approval` event.
      */
     function approve(address _spender, uint256 _amount) public returns (bool) {
-        _approve(msg.sender, _spender, _amount);
+        return _approve(msg.sender, _spender, _amount);
     }
 
     /**
@@ -110,7 +110,6 @@ contract AERC20 {
      */
     function transfer(address _to, uint256 _amount)
         public
-        virtual
         returns (bool success)
     {
         success = _transferShares(msg.sender, _to, _tokensToShares(_amount));

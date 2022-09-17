@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2021 Tenderize <info@tenderize.me>
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.7.6;
+pragma solidity ^0.8.15;
 
 // ============ Internal Imports ============
 import {BridgeMessage} from "./BridgeMessage.sol";
@@ -9,13 +9,13 @@ import {ABridgeToken} from "./ABridgeToken.sol";
 import {TokenRegistry} from "./TokenRegistry.sol";
 
 // ============ External Imports ============
-import {XAppConnectionClient} from "@nomad-xyz/contracts-router/contracts/XAppConnectionClient.sol";
-import {Router} from "@nomad-xyz/contracts-router/contracts/Router.sol";
-import {Home} from "@nomad-xyz/contracts-core/contracts/Home.sol";
-import {TypeCasts} from "@nomad-xyz/contracts-core/contracts/libs/TypeCasts.sol";
-import {TypedMemView} from "@summa-tx/memview-sol/contracts/TypedMemView.sol";
+import {XAppConnectionClient} from "./nomad/router/XAppConnectionClient.sol";
+import {Router} from "./nomad/router/Router.sol";
+import {Home} from "./nomad/core/Home.sol";
+import {TypeCasts} from "./nomad/core/libs/TypeCasts.sol";
+import {TypedMemView} from "./summa/TypedMemView.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract ABridgeRouter is Router {
     using TypedMemView for bytes;

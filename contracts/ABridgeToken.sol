@@ -1,4 +1,5 @@
-pragma solidity 0.7.6;
+pragma solidity ^0.8.15;
+
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./AERC20.sol";
 import {BridgeMessage} from "./BridgeMessage.sol";

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
-pragma solidity 0.7.6;
+pragma solidity ^0.8.15;
+
 // ============ Local Contracts ============
 import {BridgeMessage} from "./BridgeMessage.sol";
 import {Encoding} from "./utils/Encoding.sol";
@@ -7,11 +8,11 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ABridgeToken} from "./ABridgeToken.sol";
 
 // ============ External Contracts ============
-import {XAppConnectionClient} from "@nomad-xyz/contracts-router/contracts/XAppConnectionClient.sol";
-import {TypeCasts} from "@nomad-xyz/contracts-core/contracts/XAppConnectionManager.sol";
-import {UpgradeBeaconProxy} from "@nomad-xyz/contracts-core/contracts/upgrade/UpgradeBeaconProxy.sol";
-import {TypedMemView} from "@summa-tx/memview-sol/contracts/TypedMemView.sol";
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
+import {XAppConnectionClient} from "./nomad/router/XAppConnectionClient.sol";
+import {TypeCasts} from "./nomad/core/XAppConnectionManager.sol";
+import {UpgradeBeaconProxy} from "./nomad/core/upgrade/UpgradeBeaconProxy.sol";
+import {TypedMemView} from "./summa/TypedMemView.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /**
  * @title TokenRegistry

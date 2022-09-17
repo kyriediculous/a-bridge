@@ -13,11 +13,9 @@ optimizer_runs = 15000
 fuzz_runs = 7500
 
 [optimized]
-solc = '0.8.13'
 out = 'optimized-out'
 
 [test]
-solc = '0.8.13'
 via_ir = false
 src = 'test/foundry'
 
