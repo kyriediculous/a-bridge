@@ -1,4 +1,3 @@
-
 import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-web3'
 import '@nomiclabs/hardhat-waffle'
@@ -23,28 +22,27 @@ import fs from 'fs'
 dotenv.config()
 const PRIVATE_KEY = process.env.PRIVATE_KEY
 
-
 function loadTasks() {
   const tasksPath = path.join(__dirname, 'tasks')
-  fs.readdirSync(tasksPath).forEach(task => {
+  fs.readdirSync(tasksPath).forEach((task) => {
     require(`${tasksPath}/${task}`)
   })
 }
 
-if (
-  fs.existsSync(path.join(__dirname, 'artifacts')) &&
-  fs.existsSync(path.join(__dirname, 'typechain'))
-) {
+if (fs.existsSync(path.join(__dirname, 'artifacts')) && fs.existsSync(path.join(__dirname, 'typechain'))) {
   loadTasks()
 }
 
 const config: HardhatUserConfig = {
-  defaultNetwork: "hardhat",
+  defaultNetwork: 'hardhat',
   networks: {
     gorli: {
-      url: "https://goerli.infura.io/v3/79c508601e4b4b8296b921f1064220e8",
-      accounts: PRIVATE_KEY ? [`0x${PRIVATE_KEY}`] : undefined
-    }
+      url: 'https://goerli.infura.io/v3/79c508601e4b4b8296b921f1064220e8',
+      accounts: PRIVATE_KEY ? [`0x${PRIVATE_KEY}`] : undefined,
+    },
+  },
+  namedAccounts: {
+    deployer: 0,
   },
   solidity: {
     compilers: [
@@ -52,12 +50,12 @@ const config: HardhatUserConfig = {
         version: '0.8.15',
         settings: {
           optimizer: {
-            runs: 200
-          }
-        }
-      }
-    ]
+            runs: 200,
+          },
+        },
+      },
+    ],
   },
-};
+}
 
-export default config;
+export default config
