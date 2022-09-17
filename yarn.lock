@@ -681,6 +681,11 @@
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-3.4.2.tgz#d81f786fda2871d1eb8a8c5a73e455753ba53527"
   integrity sha512-z0zMCjyhhp4y7XKAcDAi3Vgms4T2PstwBdahiO0+9NaGICQKjynK3wduSRplTgk4LXmoO1yfDGO5RbjKYxtuxA==
 
+"@openzeppelin/contracts@^4.7.3":
+  version "4.7.3"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.7.3.tgz#939534757a81f8d69cc854c7692805684ff3111e"
+  integrity sha512-dGRS0agJzu8ybo44pCIf3xBaPQN/65AIXNgK8+4gzKd5kbvlqyxryUYVLJv7fK98Seyd2hDZzVEHSWAh0Bt1Yw==
+
 "@primitivefi/hardhat-dodoc@^0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@primitivefi/hardhat-dodoc/-/hardhat-dodoc-0.2.3.tgz#76aebbfa70de2d6454af29e166b1430583b54c5c"
@@ -790,7 +795,7 @@
   dependencies:
     antlr4ts "^0.5.0-alpha.4"
 
-"@summa-tx/memview-sol@^2.0.0":
+"@summa-tx/memview-sol@^2.0.0", "@summa-tx/memview-sol@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@summa-tx/memview-sol/-/memview-sol-2.0.1.tgz#1ef30762451683d3484c0aaa08e1453a0075d0c4"
   integrity sha512-GuaXBYG6/aIjKae3UJSBS61J/IuK/NTuk2IJBpGxytkxN1p3ZdRNIp8HQAIOVoCKZQtvzdPaBWokzCk/LakA/Q==
