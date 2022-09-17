@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2021 Tenderize <info@tenderize.me>
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.15;
+pragma solidity 0.7.6;
 
 // ============ Internal Imports ============
 import {BridgeMessage} from "./BridgeMessage.sol";
@@ -12,12 +12,12 @@ import {TokenRegistry} from "./TokenRegistry.sol";
 import {XAppConnectionClient} from "@nomad-xyz/contracts-router/contracts/XAppConnectionClient.sol";
 import {Router} from "@nomad-xyz/contracts-router/contracts/Router.sol";
 import {Home} from "@nomad-xyz/contracts-core/contracts/Home.sol";
-import {Version0} from "@nomad-xyz/contracts-core/contracts/Version0.sol";
+import {TypeCasts} from "@nomad-xyz/contracts-core/contracts/libs/TypeCasts.sol";
 import {TypedMemView} from "@summa-tx/memview-sol/contracts/TypedMemView.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
-contract ABridgeRouter {
+contract ABridgeRouter is Router {
     using TypedMemView for bytes;
     using TypedMemView for bytes29;
     using BridgeMessage for bytes29;
@@ -103,7 +103,7 @@ contract ABridgeRouter {
         // handle message based on the intended action
         if (_action.isTransfer()) {
             _handleTransfer(_origin, _nonce, _tokenId, _action);
-        } else if (_action.isUpdateSupply) {
+        } else if (_action.isUpdateSupply()) {
             _handleUpdateSupply(_origin, _nonce, _tokenId, _action);
         } else {
             require(false, "!valid action");
@@ -139,7 +139,7 @@ contract ABridgeRouter {
         // send message to destination chain bridge router
         _sendTransferMessage(_destination, _tokenId, _action);
         // emit Send event to record token sender
-        emit Send(_token, msg.sender, _destination, _recipient, _amount, false);
+        emit Send(_token, msg.sender, _destination, _recipient, _amount);
     }
 
     // ===== SendToHook ======
@@ -173,7 +173,7 @@ contract ABridgeRouter {
         // send message to destination chain bridge router
         _sendTransferMessage(_destination, _tokenId, _action);
         // emit Send event to record token sender
-        emit Send(_token, msg.sender, _destination, _remoteHook, _amount, true);
+        emit Send(_token, msg.sender, _destination, _remoteHook, _amount);
     }
 
     // ======== Internal Handlers =========
@@ -192,6 +192,21 @@ contract ABridgeRouter {
     }
 
     // ===== handleUpdateSupply ======
+
+    function _handleUpdateSupply(
+        uint32 _origin,
+        uint32 _nonce,
+        bytes29 _tokenId,
+        bytes29 _action
+    ) internal {
+        address _token = tokenRegistry.ensureLocalToken(
+            _tokenId.domain(),
+            _tokenId.id()
+        );
+
+        require(!tokenRegistry.isLocalOrigin(_token), "LOCAL_ORIGIN");
+        ABridgeToken(_token).updateSupply(_action.supply());
+    }
 
     // ======== Internal Helpers =========
 
@@ -231,7 +246,6 @@ contract ABridgeRouter {
             _originAndNonce(_origin, _nonce),
             _token,
             _recipient,
-            address(0),
             _amount
         );
     }
@@ -298,5 +312,24 @@ contract ABridgeRouter {
             _remote,
             BridgeMessage.formatMessage(_tokenId, _action)
         );
+    }
+
+    // ============ Internal: Utils ============
+
+    /**
+     * @dev should be impossible to renounce ownership;
+     *      we override OpenZeppelin OwnableUpgradeable's
+     *      implementation of renounceOwnership to make it a no-op
+     */
+    function renounceOwnership() public override onlyOwner {
+        // do nothing
+    }
+
+    function _originAndNonce(uint32 _origin, uint32 _nonce)
+        internal
+        pure
+        returns (uint64)
+    {
+        return (uint64(_origin) << 32) | _nonce;
     }
 }

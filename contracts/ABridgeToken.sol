@@ -1,9 +1,9 @@
-pragma solidity 0.8.15;
-
+pragma solidity 0.7.6;
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./AERC20.sol";
+import {BridgeMessage} from "./BridgeMessage.sol";
 
-contract BridgeAToken is OwnableUpgradeable, AERC20 {
+contract ABridgeToken is OwnableUpgradeable, AERC20 {
     // ============ Immutables ============
 
     // Immutables used in EIP 712 structured data hashing & signing
@@ -37,6 +37,36 @@ contract BridgeAToken is OwnableUpgradeable, AERC20 {
     );
 
     // ============ External Functions ============
+
+    /**
+     * @dev Returns the name of the token.
+     */
+    function name() public view returns (string memory) {
+        return token.name;
+    }
+
+    /**
+     * @dev Returns the symbol of the token, usually a shorter version of the
+     * name.
+     */
+    function symbol() public view returns (string memory) {
+        return token.symbol;
+    }
+
+    /**
+     * @dev Returns the number of decimals used to get its user representation.
+     * For example, if `decimals` equals `2`, a balance of `505` tokens should
+     * be displayed to a user as `5,05` (`505 / 10 ** 2`).
+     * Tokens usually opt for a value of 18, imitating the relationship between
+     * Ether and Wei. This is the value {ERC20} uses, unless {_setupDecimals} is
+     * called.
+     * NOTE: This information is only used for _display_ purposes: it in
+     * no way affects any of the arithmetic of the contract, including
+     * {IERC20-balanceOf} and {IERC20-transfer}.
+     */
+    function decimals() public view returns (uint8) {
+        return token.decimals;
+    }
 
     /**
      * @notice Destroys `_amnt` tokens from `_from`, reducing the
@@ -73,39 +103,39 @@ contract BridgeAToken is OwnableUpgradeable, AERC20 {
         }
     }
 
-    // /**
-    //  * @notice Set the details of a token
-    //  * @param _newName The new name
-    //  * @param _newSymbol The new symbol
-    //  * @param _newDecimals The new decimals
-    //  */
-    // function setDetails(
-    //     string calldata _newName,
-    //     string calldata _newSymbol,
-    //     uint8 _newDecimals
-    // ) external override {
-    //     bool _isFirstDetails = bytes(token.name).length == 0;
-    //     // 0 case is the initial deploy. We allow the deploying registry to set
-    //     // these once. After the first transfer is made, detailsHash will be
-    //     // set, allowing anyone to supply correct name/symbols/decimals
-    //     require(
-    //         _isFirstDetails ||
-    //             BridgeMessage.getDetailsHash(
-    //                 _newName,
-    //                 _newSymbol,
-    //                 _newDecimals
-    //             ) ==
-    //             detailsHash,
-    //         "!committed details"
-    //     );
-    //     // careful with naming convention change here
-    //     token.name = _newName;
-    //     token.symbol = _newSymbol;
-    //     token.decimals = _newDecimals;
-    //     if (!_isFirstDetails) {
-    //         emit UpdateDetails(_newName, _newSymbol, _newDecimals);
-    //     }
-    // }
+    /**
+     * @notice Set the details of a token
+     * @param _newName The new name
+     * @param _newSymbol The new symbol
+     * @param _newDecimals The new decimals
+     */
+    function setDetails(
+        string calldata _newName,
+        string calldata _newSymbol,
+        uint8 _newDecimals
+    ) external {
+        bool _isFirstDetails = bytes(token.name).length == 0;
+        // 0 case is the initial deploy. We allow the deploying registry to set
+        // these once. After the first transfer is made, detailsHash will be
+        // set, allowing anyone to supply correct name/symbols/decimals
+        require(
+            _isFirstDetails ||
+                BridgeMessage.getDetailsHash(
+                    _newName,
+                    _newSymbol,
+                    _newDecimals
+                ) ==
+                detailsHash,
+            "!committed details"
+        );
+        // careful with naming convention change here
+        token.name = _newName;
+        token.symbol = _newSymbol;
+        token.decimals = _newDecimals;
+        if (!_isFirstDetails) {
+            emit UpdateDetails(_newName, _newSymbol, _newDecimals);
+        }
+    }
 
     /**
      * @notice Sets approval from owner to spender to value
@@ -191,5 +221,9 @@ contract BridgeAToken is OwnableUpgradeable, AERC20 {
      */
     function renounceOwnership() public override onlyOwner {
         // do nothing
+    }
+
+    function updateSupply(uint256 _newSupply) external {
+        totalSupply = _newSupply;
     }
 }

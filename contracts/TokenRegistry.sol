@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
-pragma solidity 0.8.15;
-
+pragma solidity 0.7.6;
 // ============ Local Contracts ============
-// import {BridgeMessage} from "./BridgeMessage.sol";
+import {BridgeMessage} from "./BridgeMessage.sol";
 import {Encoding} from "./utils/Encoding.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ABridgeToken} from "./ABridgeToken.sol";
@@ -12,7 +11,7 @@ import {XAppConnectionClient} from "@nomad-xyz/contracts-router/contracts/XAppCo
 import {TypeCasts} from "@nomad-xyz/contracts-core/contracts/XAppConnectionManager.sol";
 import {UpgradeBeaconProxy} from "@nomad-xyz/contracts-core/contracts/upgrade/UpgradeBeaconProxy.sol";
 import {TypedMemView} from "@summa-tx/memview-sol/contracts/TypedMemView.sol";
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
 
 /**
  * @title TokenRegistry
@@ -30,7 +29,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
  * perform a lookup in either direction
  * Note that locally originating tokens should NEVER be represented in these lookup tables.
  */
-contract TokenRegistry is Initializable, XAppConnectionClient, ITokenRegistry {
+contract TokenRegistry is Initializable, XAppConnectionClient {
     // ============ Libraries ============
 
     using TypedMemView for bytes;
@@ -118,7 +117,6 @@ contract TokenRegistry is Initializable, XAppConnectionClient, ITokenRegistry {
      */
     function ensureLocalToken(uint32 _domain, bytes32 _id)
         external
-        override
         onlyOwner
         returns (address _local)
     {
@@ -141,7 +139,6 @@ contract TokenRegistry is Initializable, XAppConnectionClient, ITokenRegistry {
     function getTokenId(address _local)
         external
         view
-        override
         returns (uint32 _domain, bytes32 _id)
     {
         BridgeMessage.TokenId memory _tokenId = representationToCanonical[
@@ -185,7 +182,6 @@ contract TokenRegistry is Initializable, XAppConnectionClient, ITokenRegistry {
     function getLocalAddress(uint32 _domain, bytes32 _id)
         public
         view
-        override
         returns (address _local)
     {
         if (_domain == _localDomain()) {
@@ -207,7 +203,6 @@ contract TokenRegistry is Initializable, XAppConnectionClient, ITokenRegistry {
     function mustHaveLocalToken(uint32 _domain, bytes32 _id)
         external
         view
-        override
         returns (IERC20)
     {
         address _local = getLocalAddress(_domain, _id);
@@ -219,12 +214,7 @@ contract TokenRegistry is Initializable, XAppConnectionClient, ITokenRegistry {
      * @notice Determine if token is of local origin
      * @return TRUE if token is locally originating
      */
-    function isLocalOrigin(address _token)
-        external
-        view
-        override
-        returns (bool)
-    {
+    function isLocalOrigin(address _token) external view returns (bool) {
         // If the contract WAS deployed by the TokenRegistry,
         // it will be stored in this mapping.
         // If so, it IS NOT of local origin
@@ -290,15 +280,15 @@ contract TokenRegistry is Initializable, XAppConnectionClient, ITokenRegistry {
         // Initialize the token. Normally we initialize during proxy deployment
         // but due to a proxy quirk, it's clearer to do it explicitly when
         // calling an initializer with no arguments.
-        IBridgeToken(_token).initialize();
+        ABridgeToken(_token).initialize();
         // set the default token name & symbol
         (string memory _name, string memory _symbol) = _defaultDetails(
             _domain,
             _id
         );
-        IBridgeToken(_token).setDetails(_name, _symbol, 18);
+        ABridgeToken(_token).setDetails(_name, _symbol, 18);
         // transfer ownership to bridgeRouter
-        IBridgeToken(_token).transferOwnership(owner());
+        ABridgeToken(_token).transferOwnership(owner());
         // store token in mappings
         _setCanonicalToRepresentation(_domain, _id, _token);
         _setRepresentationToCanonical(_domain, _id, _token);

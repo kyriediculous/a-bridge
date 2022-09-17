@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
-pragma solidity ^0.8.15;
+pragma solidity 0.7.6;
 
 // ============ External Imports ============
 import {TypedMemView} from "@summa-tx/memview-sol/contracts/TypedMemView.sol";
@@ -468,10 +468,10 @@ library BridgeMessage {
         internal
         pure
         typeAssert(_updateSupplyAction, Types.UpdateSupply)
-        returns (bytes32)
+        returns (uint256)
     {
         // before = 1 byte identifier + 32 bytes uint256 supply = 33
-        return _updateSupplyAction.index(33, 32);
+        return _updateSupplyAction.indexUint(33, 32);
     }
 
     /**

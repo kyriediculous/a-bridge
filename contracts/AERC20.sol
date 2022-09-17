@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.15;
+pragma solidity 0.7.6;
 
 contract AERC20 {
     /**
@@ -162,9 +162,7 @@ contract AERC20 {
     ) private returns (bool) {
         shares[_from] -= _shares;
         // unchecked as bound by totalShares hence cannot overflow
-        unchecked {
-            shares[_to] += _shares;
-        }
+        shares[_to] += _shares;
         return true;
     }
 
@@ -174,9 +172,7 @@ contract AERC20 {
      */
     function _mintShares(address _account, uint256 _sharesToMint) internal {
         totalShares += _sharesToMint;
-        unchecked {
-            shares[_account] += _sharesToMint;
-        }
+        shares[_account] += _sharesToMint;
     }
 
     /**
@@ -187,9 +183,7 @@ contract AERC20 {
     function _burnShares(address _account, uint256 _sharesToBurn) internal {
         // Underflow if not enough shares to burn
         shares[_account] -= _sharesToBurn;
-        unchecked {
-            totalShares -= _sharesToBurn;
-        }
+        totalShares -= _sharesToBurn;
     }
 
     function _sharesToTokens(uint256 _shares) internal view returns (uint256) {
