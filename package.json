@@ -56,8 +56,10 @@
     "*.ts": "prettier --write"
   },
   "dependencies": {
-    "@connext/nxtp-contracts": "^0.2.0-beta.23",
+    "@nomad-xyz/contracts-core": "^1.1.0",
+    "@nomad-xyz/contracts-router": "^1.1.0",
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",
+    "@openzeppelin/contracts-upgradeable": "^4.7.3",
     "@typechain/ethers-v5": "^10.0.0",
     "@typechain/hardhat": "^6.0.0",
     "typechain": "^8.0.0"
