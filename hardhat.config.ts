@@ -40,9 +40,19 @@ const config: HardhatUserConfig = {
       url: 'https://goerli.infura.io/v3/79c508601e4b4b8296b921f1064220e8',
       accounts: PRIVATE_KEY ? [`0x${PRIVATE_KEY}`] : undefined,
     },
+    mumbai: {
+      url: 'https://polygon-mumbai.g.alchemy.com/v2/y5D9C_eB0aRhS4Sqa57ZdvD0EQ1HzLkO',
+      accounts: PRIVATE_KEY ? [`0x${PRIVATE_KEY}`] : undefined,
+    },
   },
   namedAccounts: {
     deployer: 0,
+  },
+  etherscan: {
+    apiKey: {
+      mumbai: process.env.MUMBAISCAN as string,
+      arbitrumOne: process.env.ETHERSCAN as string,
+    },
   },
   solidity: {
     compilers: [

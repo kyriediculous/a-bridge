@@ -123,8 +123,7 @@ contract ABridgeRouter is Router {
         address _token,
         uint256 _amount,
         uint32 _destination,
-        bytes32 _recipient,
-        bool /*_enableFast - deprecated field, left argument for backwards compatibility */
+        bytes32 _recipient
     ) external {
         // validate inputs
         require(_recipient != bytes32(0), "!recip");

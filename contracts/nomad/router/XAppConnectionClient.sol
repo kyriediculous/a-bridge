@@ -26,7 +26,6 @@ abstract contract XAppConnectionClient is OwnableUpgradeable {
 
     function __XAppConnectionClient_initialize(address _xAppConnectionManager)
         internal
-        initializer
     {
         xAppConnectionManager = XAppConnectionManager(_xAppConnectionManager);
         __Ownable_init();
